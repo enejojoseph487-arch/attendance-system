@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <h2>Teacher Attendance - Admin</h2>
+    <button onclick="logout()">Log out</button>
+
+    <h3>Currently signed in</h3>
+    <ul id="active"></ul>
+
+    <h3>Log</h3>
+    <input type="date" id="date" /> <button onclick="load()">Load</button>
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>Teacher</th>
+          <th>Sign in</th>
+          <th>Sign out</th>
+          <th>Hours</th>
+        </tr>
+      </thead>
+      <tbody id="log"></tbody>
+    </table>
+
+    <h3>Add teacher</h3>
+    <input id="t-name" placeholder="Full name" />
+    <input id="t-email" placeholder="Email" />
+    <input
+      id="t-pass"
+      type="password"
+      placeholder="Temporary password (min 6)"
+    />
+    <button onclick="addTeacher()">Add</button>
+    <p id="t-msg"></p>
+
+    <h3>Teachers</h3>
+    <ul id="teachers"></ul>
+
+    <script>
+      if (!localStorage.token) location.href = "/login.html";
+      const logout = () => {
+        localStorage.removeItem("token");
+        location.href = "/login.html";
+      };
+
+      const authFetch = (url, opts = {}) =>
+        fetch(url, {
+          ...opts,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.token,
+          },
+        });
+      const t = (d) => (d ? new Date(d).toLocaleTimeString() : "-");
+
+      async function load() {
+        const date =
+          document.getElementById("date").value ||
+          new Date().toISOString().slice(0, 10);
+        const [a, l] = await Promise.all([
+          authFetch("/api/sessions/admin/active"),
+          authFetch("/api/sessions/admin/log?date=" + date),
+        ]);
+        if (a.status === 401 || a.status === 403) return logout();
+        const active = await a.json();
+        const log = await l.json();
+
+        document.getElementById("active").innerHTML =
+          active
+            .map(
+              (s) =>
+                `<li>${s.teacher.name} (since ${t(s.signIn)})
+     <button onclick="closeSession('${s._id}')">Sign out now</button></li>`,
+            )
+            .join("") || "<li>Nobody</li>";
+
+        document.getElementById("log").innerHTML = log
+          .map((s) => {
+            const hrs = s.signOut
+              ? ((new Date(s.signOut) - new Date(s.signIn)) / 36e5).toFixed(2)
+              : "-";
+            return `<tr><td>${s.teacher.name}</td><td>${t(s.signIn)}</td><td>${t(s.signOut)}</td><td>${hrs}</td></tr>`;
+          })
+          .join("");
+      }
+
+      async function closeSession(id) {
+        if (!confirm("Sign this teacher out now?")) return;
+        await authFetch("/api/sessions/admin/" + id + "/close", {
+          method: "PATCH",
+          body: "{}",
+        });
+        load();
+      }
+
+      async function loadTeachers() {
+        const list = await (await authFetch("/api/auth/users")).json();
+        document.getElementById("teachers").innerHTML =
+          list.map((x) => `<li>${x.name} (${x.email})</li>`).join("") ||
+          "<li>No teachers yet</li>";
+      }
+
+      async function addTeacher() {
+        const msg = document.getElementById("t-msg");
+        const res = await authFetch("/api/auth/users", {
+          method: "POST",
+          body: JSON.stringify({
+            name: document.getElementById("t-name").value,
+            email: document.getElementById("t-email").value,
+            password: document.getElementById("t-pass").value,
+            role: "teacher",
+          }),
+        });
+        const data = await res.json();
+        msg.style.color = res.ok ? "green" : "red";
+        msg.textContent = res.ok ? "Added " + data.name : data.message;
+        if (res.ok) {
+          ["t-name", "t-email", "t-pass"].forEach(
+            (id) => (document.getElementById(id).value = ""),
+          );
+          loadTeachers();
+        }
+      }
+
+      load();
+      loadTeachers();
+      setInterval(load, 30000);
+    </script>
+  </body>
+</html>
