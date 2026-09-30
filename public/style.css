@@ -1,17 +1,27 @@
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: system-ui, Arial, sans-serif;
-  /* background: #f1f5f9; */
-  background: red;
+  background: #f1f5f9;
+
   color: #1e293b;
   max-width: 900px;
   margin: 0 auto;
   padding: 24px 16px;
 }
 
-h2 { color: #1d4ed8; margin-top: 0; }
-h3 { color: #334155; margin: 28px 0 10px; border-left: 4px solid #3b82f6; padding-left: 10px; }
+h2 {
+  color: #1d4ed8;
+  margin-top: 0;
+}
+h3 {
+  color: #334155;
+  margin: 28px 0 10px;
+  border-left: 4px solid #3b82f6;
+  padding-left: 10px;
+}
 
 input {
   padding: 10px 12px;
@@ -20,7 +30,10 @@ input {
   border-radius: 6px;
   font-size: 15px;
 }
-input:focus { outline: 2px solid #93c5fd; border-color: #3b82f6; }
+input:focus {
+  outline: 2px solid #93c5fd;
+  border-color: #3b82f6;
+}
 
 button {
   padding: 10px 16px;
@@ -31,13 +44,27 @@ button {
   font-size: 15px;
   cursor: pointer;
 }
-button:hover { filter: brightness(0.92); }
-button:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; filter: none; }
+button:hover {
+  filter: brightness(0.92);
+}
+button:disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  filter: none;
+}
 
 /* Teacher page */
-#in  { background: #16a34a; }
-#out { background: #dc2626; }
-#in:disabled, #out:disabled { background: #cbd5e1; }
+#in {
+  background: #16a34a;
+}
+#out {
+  background: #dc2626;
+}
+#in:disabled,
+#out:disabled {
+  background: #cbd5e1;
+}
 #status {
   background: #fff;
   padding: 14px 16px;
@@ -47,7 +74,10 @@ button:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; filt
 }
 
 /* Lists and tables */
-ul { list-style: none; padding: 0; }
+ul {
+  list-style: none;
+  padding: 0;
+}
 li {
   background: #fff;
   padding: 10px 14px;
@@ -55,12 +85,37 @@ li {
   border-radius: 6px;
   border-left: 4px solid #16a34a;
 }
-li button { background: #dc2626; padding: 6px 10px; font-size: 13px; margin-left: 8px; }
+li button {
+  background: #dc2626;
+  padding: 6px 10px;
+  font-size: 13px;
+  margin-left: 8px;
+}
 
-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-th { background: #1d4ed8; color: #fff; text-align: left; padding: 10px; }
-td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
-tr:nth-child(even) td { background: #f8fafc; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+th {
+  background: #1d4ed8;
+  color: #fff;
+  text-align: left;
+  padding: 10px;
+}
+td {
+  padding: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+tr:nth-child(even) td {
+  background: #f8fafc;
+}
 
 /* Login page box */
-body:has(#email):has(button[onclick="login()"]) { max-width: 380px; margin-top: 12vh; }
+body:has(#email):has(button[onclick="login()"]) {
+  max-width: 380px;
+  margin-top: 12vh;
+}
