@@ -2,7 +2,8 @@
 
 body {
   font-family: system-ui, Arial, sans-serif;
-  background: #f1f5f9;
+  /* background: #f1f5f9; */
+  background: red;
   color: #1e293b;
   max-width: 900px;
   margin: 0 auto;
